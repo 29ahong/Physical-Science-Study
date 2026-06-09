@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics & Chemistry Study Blueprint</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #374151;
+            background-color: #f9fafb;
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Layout Structure */
+        #sidebar {
+            width: 260px;
+            background-color: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            padding: 24px 16px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+        #main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+        /* Sidebar Styling */
+        #sidebar h3 {
+            font-size: 16px;
+            color: #111111;
+            margin-bottom: 16px;
+            padding-left: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+            background: transparent;
+            color: #4b5563;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.15s ease;
+        }
+        .nav-btn:hover {
+            background-color: #f3f4f6;
+            color: #111111;
+        }
+        .nav-btn.active {
+            background-color: #ebf4ff;
+            color: #1e6fcc;
+            font-weight: 600;
+        }
+
+        /* Components Styling */
+        h2 {
+            color: #111111;
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #111111;
+            border-bottom: 1px solid #f3f4f6;
+            padding-bottom: 6px;
+        }
+        p {
+            font-size: 14px;
+            line-height: 1.75;
+            margin-bottom: 8px;
+        }
+        ol, ul {
+            padding-left: 20px;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        /* Tags */
+        .tag {
+            border-radius: 6px;
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 4px;
+            display: inline-block;
+            margin-bottom: 2px;
+        }
+        .tag-phys { background: #ebf4ff; color: #1e6fcc; }
+        .tag-chem { background: #e6f7ef; color: #0e6e47; }
+
+        /* Boxes */
+        .infobox {
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .info-default { background: #ebf4ff; border: 1px solid #90c2f5; color: #1e5fa0; }
+        .info-warn { background: #fff8e6; border: 1px solid #f5cc6e; color: #7a4f00; }
+        .info-success { background: #e6f7ef; border: 1px solid #5fcc9a; color: #0a5c38; }
+        .info-danger { background: #fef0f0; border: 1px solid #f5abab; color: #8b1a1a; }
+
+        /* Formulas & Tables */
+        .formula {
+            font-family: monospace;
+            background: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #1a1a1a;
+            margin: 2px;
+            display: inline-block;
+        }
+        .formula-block {
+            display: block;
+            padding: 8px 12px;
+            margin: 8px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 14px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th {
+            background: #f3f4f6;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+            color: #111111;
+        }
+        td {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+        }
+        tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        /* Grid Layout utils */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .formula-cell {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Page Display control */
+        .page {
+            display: none;
+        }
+        .page.active-page {
+            display: block;
+        }
+
+        /* Interactive Quiz Elements */
+        .quiz-item {
+            margin-bottom: 24px;
+            border-bottom: 1px dashed #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .quiz-opt {
+            text-align: left;
+            padding: 10px 14px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.1s ease;
+        }
+        .quiz-opt:hover {
+            background: #e5e7eb;
+        }
+        .explanation {
+            display: none;
+            margin-top: 10px;
+            font-size: 13px;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h3>Study Blueprint</h3>
+        <button class="nav-btn active" onclick="switchPage('overview', this)">Overview</button>
+        <button class="nav-btn" onclick="switchPage('motion', this)">Motion</button>
+        <button class="nav-btn" onclick="switchPage('forces', this)">Forces</button>
+        <button class="nav-btn" onclick="switchPage('workenergy', this)">Work & Energy</button>
+        <button class="nav-btn" onclick="switchPage('electricity', this)">Electricity</button>
+        <button class="nav-btn" onclick="switchPage('circuits', this)">Circuits</button>
+        <button class="nav-btn" onclick="switchPage('waves', this)">Waves & Light</button>
+        <button class="nav-btn" onclick="switchPage('matter', this)">Matter & Atoms</button>
+        <button class="nav-btn" onclick="switchPage('periodic', this)">Periodic Table</button>
+        <button class="nav-btn" onclick="switchPage('bonds', this)">Bonding</button>
+        <button class="nav-btn" onclick="switchPage('reactions', this)">Reactions</button>
+        <button class="nav-btn" onclick="switchPage('quiz', this)">Practice Quiz</button>
+    </div>
+
+    <div id="main-content">
+        
+        <div id="overview" class="page active-page">
+            <h2>Overview</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-title">Physics Topics</div>
+                    <p><span class="tag tag-phys">Ch 2</span> Motion — speed, velocity, acceleration</p>
+                    <p><span class="tag tag-phys">Ch 3</span> Forces — Newton's laws, friction, momentum</p>
+                    <p><span class="tag tag-phys">Ch 4</span> Work, power, machines, energy</p>
+                    <p><span class="tag tag-phys">Ch 6</span> Electricity — Ohm's law, circuits</p>
+                    <p><span class="tag tag-phys">Ch 9-12</span > Waves, sound, light</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Chemistry Topics</div>
+                    <p><span class="tag tag-chem">Ch 15</span> Matter — mixtures, changes</p>
+                    <p><span class="tag tag-chem">Ch 16/17</span> Atomic structure, isotopes</p>
+                    <p><span class="tag tag-chem">Ch 16/17</span> Periodic table — trends, groups</p>
+                    <p><span class="tag tag-chem">Ch 18</span > Chemical bonds & formulas</p>
+                    <p><span class="tag tag-chem">Ch 19</span> Reactions — balancing, types</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Master Formula Sheet</div>
+                <div class="grid-3">
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Speed</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">v = d/t</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Acceleration</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">a = Δv/t</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Newton's 2nd</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">F = ma</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Weight</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">W = mg</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Momentum</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">p = mv</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Work</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">W = Fd</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Power</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">P = W/t</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">KE</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">KE = ½mv²</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">PE (gravity)</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">PE = mgh</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Ohm's law</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">V = IR</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Elec. power</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">P = IV</div></div>
+                    <div class="formula-cell"><div style="font-size:11px;color:#6b7280;margin-bottom:4px;">Wave speed</div><div style="font-family:monospace;font-size:14px;font-weight:600;color:#111;">v = fλ</div></div>
+                </div>
+            </div>
+            <div class="infobox info-warn">
+                <strong>2-day study plan:</strong> Day 1 → Physics (Motion → Forces → Work/Energy → Electricity → Circuits → Waves). Day 2 → Chemistry (Matter → Atoms → Periodic Table → Bonding → Reactions) + Quiz. Don't forget Bio!
+            </div>
+        </div>
+
+        <div id="motion" class="page">
+            <h2>Motion</h2>
+            <div class="card">
+                <div class="card-title">Reference frames, distance vs. displacement</div>
+                <p>Motion looks different depending on your <strong>frame of reference</strong>. A person on a train and one on a platform see the same ball move differently.</p>
+                <p style="margin-top: 8px;"><strong>Distance</strong> = total path traveled (scalar — no direction). <strong>Displacement</strong> = straight-line distance from start to end, with direction (vector).</p>
+                <div class="infobox info-default">Walk 3 km east then 3 km west: Distance = 6 km. Displacement = 0 km (back at start).</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Speed vs. velocity</div>
+                <p><strong>Speed</strong> = how fast (scalar). <span class="formula">v = d/t</span> — units: m/s or km/h.</p>
+                <p style="margin-top: 6px;"><strong>Velocity</strong> = speed + direction (vector). "60 mph north" = velocity. "60 mph" = speed.</p>
+                <p style="margin-top: 6px;">A car's speedometer shows <strong>instantaneous speed</strong>. Average speed = total distance ÷ total time.</p>
+                <p style="margin-top: 6px;"><strong>On a distance-time graph:</strong> straight line = constant speed · curved line = accelerating · steeper slope = faster. <em>*Exam Tip: A flat horizontal line on a distance-time graph means the object is at rest!</em></p>
+                <p style="margin-top: 6px;">Adding two velocities = <strong>vector addition</strong>. The result = the <strong>resultant vector</strong>.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Acceleration</div>
+                <p>Acceleration = any change in velocity — speeding up, slowing down, or changing direction.</p>
+                <span class="formula formula-block">a = (v_final − v_initial) / t</span>
+                <p>Units: m/s². Free-fall: <strong>9.8 m/s²</strong> downward. An object in a circle accelerates because its direction keeps changing.</p>
+                <div class="infobox info-warn">Deceleration is still acceleration — it's just negative.</div>
+                <div class="infobox info-success">Practice: 6 m/s → 10 m/s in 4 s. a = (10−6)/4 = <strong>1 m/s²</strong></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Projectile motion</div>
+                <p>A thrown object follows a curved path. Gravity pulls it down while horizontal velocity stays constant. A javelin's path is an example.</p>
+            </div>
+        </div>
+
+        <div id="forces" class="page">
+            <h2>Forces</h2>
+            <div class="card">
+                <div class="card-title">What is a force?</div>
+                <p>A force is a push or pull — a vector with magnitude and direction. The <strong>net force</strong> = sum of all forces. If net force = 0, forces are <strong>balanced</strong> and the object doesn't accelerate.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Newton's 3 Laws — most tested material</div>
+                <p><strong>1st Law (Inertia):</strong> An object at rest stays at rest; moving stays moving — unless net force acts on it. <strong>Inertia</strong> = resistance to change. This is why you lurch forward in a crash — your body keeps moving when the car stops.</p>
+                <p style="margin-top: 8px;"><strong>2nd Law:</strong> <span class="formula">F = ma</span> — more force = more acceleration; more mass = less acceleration for same force.</p>
+                <p style="margin-top: 8px;"><strong>3rd Law (Action-Reaction):</strong> Every action has an equal and opposite reaction. Push a wall → wall pushes back equally.</p>
+                <div class="infobox info-success">Practice: 0.20 kg plane at 12 m/s². F = 0.20 × 12 = <strong>2.4 N</strong></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Friction & gravity</div>
+                <p><strong>Friction</strong> opposes motion between surfaces. <strong>Static friction</strong> (object still) is greater than <strong>sliding friction</strong> (already moving) — harder to start than to keep sliding.</p>
+                <p style="margin-top: 6px;"><strong>Weight</strong> = force of gravity. <span class="formula">W = mg</span> where g = 9.8 m/s².</p>
+                <p style="margin-top: 6px;">Falling object: gravity (down) + air resistance (up). When balanced → <strong>terminal velocity</strong>, net force = 0.</p>
+                <div class="infobox info-success">Practice: Baby 4.2 kg. W = 4.2 × 9.8 = <strong>41.2 N</strong></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Momentum</div>
+                <span class="formula formula-block">p = mv   (momentum = mass × velocity)</span>
+                <p>Units: kg·m/s. Momentum is a vector. In a closed system, total momentum is <strong>conserved</strong> — what one loses, the other gains.</p>
+                <div class="infobox info-success">Practice: 32 kg canoe at 2.5 m/s. p = 32 × 2.5 = <strong>80 kg·m/s</strong></div>
+            </div>
+        </div>
+
+        <div id="workenergy" class="page">
+            <h2>Work & Energy</h2>
+            <div class="card">
+                <div class="card-title">Work & power</div>
+                <p><span class="formula">W = F × d</span> — Work only happens when force moves an object in the direction of force. Force perpendicular to motion = no work.</p>
+                <p style="margin-top: 6px;"><span class="formula">P = W/t</span> — Power = how fast work is done. Units: watts (W). 1 W = 1 J/s. Horsepower is also a unit of power.</p>
+                <div class="infobox info-success">Worker pushes 220 N over 10 m: W = 220 × 10 = <strong>2200 J</strong></div>
+                <div class="infobox info-success">Girl lifts 100 N, 2 m in 0.5 s: P = (100×2)/0.5 = <strong>400 W</strong></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Simple machines</div>
+                <p>A machine changes a force. Efficiency is always less than 100% due to friction.</p>
+                <span class="formula formula-block">IMA = input distance / output distance</span>
+                <span class="formula formula-block">AMA = output force / input force</span>
+                <span class="formula formula-block">Efficiency = (Work output / Work input) × 100%</span>
+                <div class="infobox info-success">IMA: Input 6 m, output 0.5 m → IMA = 6/0.5 = <strong>12</strong></div>
+                <div class="infobox info-success">AMA: 30 N out / 16 N in = <strong>1.9</strong></div>
+                <div class="infobox info-success">Efficiency: 32 J / (12 × 0.3) = 32/3.6 = <strong>89%</strong></div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Lever Class</th><th>What's in the middle</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1st class</td><td>Fulcrum</td><td>Seesaw, crowbar</td></tr>
+                            <tr><td>2nd class</td><td>Resistance (load)</td><td>Wheelbarrow, bottle opener</td></tr>
+                            <tr><td>3rd class</td><td>Effort force</td><td>Tweezers, baseball bat — IMA always &lt; 1</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 6px;">A screw = inclined plane wrapped around a cylinder.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Kinetic & potential energy</div>
+                <span class="formula formula-block">KE = ½mv²</span>
+                <span class="formula formula-block">PE = mgh</span>
+                <p><strong>Mechanical energy</strong> = KE + PE. Elastic PE = energy stored in a stretched/compressed object.</p>
+                <p style="margin-top: 6px;"><strong>Conservation of energy:</strong> energy can't be created or destroyed, only converted. Pendulum: max KE at bottom, max PE at top, KE = 0 at both extreme ends (A and E).</p>
+                <div class="infobox info-success">KE: 74 kg at 52 m/s → KE = ½(74)(2704) = <strong>100,048 J</strong></div>
+                <div class="infobox info-success">Dog jumps 1.1 m: KE = mgh = 7.7 × 9.8 × 1.1 = <strong>83 J</strong></div>
+            </div>
+        </div>
+
+        <div id="electricity" class="page">
+            <h2>Electricity</h2>
+            <div class="card">
+                <div class="card-title">Static electricity & charges</div>
+                <p>Two types of charge: positive and negative. Like charges repel; opposite charges attract. Electric force is directly proportional to charge and inversely proportional to distance squared.</p>
+                <p style="margin-top: 8px;"><strong>3 ways to charge:</strong> friction (rubbing transfers electrons), conduction (direct contact), induction (nearby charge rearranges electrons without touching).</p>
+                <p style="margin-top: 8px;"><strong>Static discharge</strong> = charge suddenly flows (lightning, doorknob shock). <strong>Grounding</strong> = transferring excess charge to Earth.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Current, voltage, resistance — Ohm's law</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Quantity</th><th>Symbol</th><th>Unit</th><th>What it means</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Current</td><td>I</td><td>Ampere (A)</td><td>Flow of electric charge</td></tr>
+                            <tr><td>Voltage</td><td>V</td><td>Volt (V)</td><td>Pressure pushing current; potential difference</td></tr>
+                            <tr><td>Resistance</td><td>R</td><td>Ohm (Ω)</td><td>Opposition to current flow</td></tr>
+                            <tr><td>Power</td><td>P</td><td>Watt (W)</td><td>Rate of energy use</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <span class="formula formula-block">Ohm's Law:  V = I × R</span>
+                <span class="formula formula-block">Power:  P = I × V</span>
+                <p>Conductors (copper, metals) = low resistance. Insulators (wood, rubber, plastic) = high resistance. A <strong>superconductor</strong> has near-zero resistance when cooled.</p>
+                <div class="infobox info-default">A complete, closed path for current = a <strong>circuit</strong>. Current only flows in a closed circuit. Conventional current flows in the direction positive charges would move.</div>
+            </div>
+        </div>
+
+        <div id="circuits" class="page">
+            <h2>Circuits</h2>
+            <div class="card">
+                <div class="card-title">Series circuit rules</div>
+                <p>One path only. If one component breaks, the whole circuit stops.</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Property</th><th>Rule</th><th>Example (R1=100Ω, R2=500Ω, R3=400Ω, VT=10V)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Current</td><td>Same everywhere: IT = I1 = I2 = I3</td><td>IT = V/RT = 10/1000 = 0.01 A</td></tr>
+                            <tr><td>Voltage</td><td>Splits: V1+V2+V3 = VT</td><td>V1=1V, V2=5V, V3=4V</td></tr>
+                            <tr><td>Resistance</td><td>Adds: RT = R1+R2+R3</td><td>RT = 100+500+400 = 1000 Ω</td></tr>
+                            <tr><td>Power</td><td>P = IV per resistor</td><td>P1=0.01W, P2=0.05W, PT=0.1W</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Parallel circuit rules</div>
+                <p>Multiple paths. If one branch breaks, others keep working.</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Property</th><th>Rule</th><th>Example (R1=90Ω, R2=45Ω, R3=180Ω, VT=9V)</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Voltage</td><td>Same everywhere: VT = V1 = V2 = V3</td><td>Each branch = 9V</td></tr>
+                            <tr><td>Current</td><td>Splits: IT = I1+I2+I3</td><td>I1=0.1A, I2=0.2A, I3=0.05A, IT=0.35A</td></tr>
+                            <tr><td>Resistance</td><td>1/RT = 1/R1+1/R2+1/R3</td><td>RT ≈ 26 Ω</td></tr>
+                            <tr><td>Power</td><td>P = IV per branch</td><td>P1=0.9W, P2=1.8W, PT=3.2W</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="infobox info-warn">In parallel, RT is always LESS than the smallest resistor. More paths = less total resistance.</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Step-by-step circuit problem strategy</div>
+                <ol>
+                    <li>Identify: series or parallel?</li>
+                    <li>Find RT (add for series; use 1/RT formula for parallel)</li>
+                    <li>Find total current: I = V/RT</li>
+                    <li>Use rules to find each component's V and I</li>
+                    <li>Find power: P = IV for each component</li>
+                </ol>
+                <div class="infobox info-default">Parallel RT tip: find common denominator. 1/90 + 1/45 + 1/180 = 2/180 + 4/180 + 1/180 = 7/180 → RT = 180/7 ≈ 25.7 Ω</div>
+            </div>
+        </div>
+
+        <div id="waves" class="page">
+            <h2>Waves & Light</h2>
+            <div class="card">
+                <div class="card-title">Wave properties</div>
+                <p>Waves transfer energy, not matter. All waves have amplitude, wavelength, and frequency.</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Property</th><th>Definition</th><th>Units</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Amplitude</td><td>Greatest displacement from rest — more amplitude = more energy</td><td>meters</td></tr>
+                            <tr><td>Wavelength (λ)</td><td>Distance from crest to crest (or trough to trough)</td><td>meters</td></tr>
+                            <tr><td>Frequency (f)</td><td>Number of waves per second</td><td>hertz (Hz)</td></tr>
+                            <tr><td>Wave speed (v)</td><td>v = fλ</td><td>m/s</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>Vibration direction</th><th>Has</th><th>Example</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Transverse</td><td>Perpendicular to travel</td><td>Crests & troughs</td><td>Rope wave, light</td></tr>
+                            <tr><td>Longitudinal</td><td>Parallel to travel</td><td>Compressions & rarefactions</td><td>Sound</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="infobox info-success">Practice: f = 9.4×10⁹ Hz, v = 3×10⁸ m/s → λ = v/f = <strong>0.032 m</strong></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Reflection, refraction & interference</div>
+                <p><strong>Reflection:</strong> wave bounces off surface. Angle of incidence = angle of reflection (both measured from the normal — a line perpendicular to the surface).</p>
+                <p style="margin-top: 6px;"><strong>Refraction:</strong> wave bends entering a new medium at an angle (one end changes speed first). Light slows down leaving a vacuum. Mirages = light refracting through hot air layers.</p>
+                <p style="margin-top: 6px;"><strong>Constructive interference:</strong> waves combine → bigger wave (crests align).</p>
+                <p style="margin-top: 6px;"><strong>Standing waves:</strong> appear stationary. Nodes = zero displacement points. Resonance = standing waves between piano strings and soundboard.</p>
+                <p style="margin-top: 6px;"><strong>Doppler effect:</strong> perceived change in pitch/frequency when source or observer is moving (the train whistle example).</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Sound</div>
+                <p>Sound = longitudinal wave. Loudness measured in <strong>decibels</strong>. Pitch = frequency. The number of half-wavelengths that fit in a guitar string determines pitch. Outer ear collects and focuses sound.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Light & the electromagnetic spectrum</div>
+                <p>Light = transverse wave. EM waves travel through a vacuum at <strong>3.00 × 10⁸ m/s</strong>.</p>
+                <p style="margin-top: 6px;">EM spectrum (low → high frequency): radio → microwave → <strong>infrared</strong> → <strong>visible light</strong> → ultraviolet → X-ray → <strong>gamma rays</strong> (shortest wavelength).</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Material</th><th>What it does to light</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Transparent</td><td>Transmits almost all light</td></tr>
+                            <tr><td>Translucent</td><td>Scatters some light (milk, fog)</td></tr>
+                            <tr><td>Opaque</td><td>Blocks light</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>White light through prism → splits into colors because each color travels at a different speed (different frequency). Combining primary pigments equally = black. Mixing complementary light colors = white.</p>
+                <p style="margin-top: 6px;">Plane mirror → virtual image (appears behind mirror). Curved/concave mirror can make real images (projectable on screen). Higher index of refraction → more likely total internal reflection (fiber optics).</p>
+            </div>
+        </div>
+
+        <div id="matter" class="page">
+            <h2>Matter & Atoms</h2>
+            <div class="card">
+                <div class="card-title">Classification of matter</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>Key feature</th><th>Examples</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Element</td><td>Only one type of atom</td><td>Gold, oxygen, carbon</td></tr>
+                            <tr><td>Compound</td><td>Fixed ratio of 2+ elements</td><td>H₂O, NaCl, CO₂</td></tr>
+                            <tr><td>Homogeneous mixture</td><td>Same throughout (solution)</td><td>Saltwater, air, lemonade</td></tr>
+                            <tr><td>Heterogeneous mixture</td><td>Parts visibly different</td><td>Salad, granite, trail mix</td></tr>
+                            <tr><td>Suspension</td><td>Scatters light; particles settle</td><td>Muddy water, OJ with pulp</td></tr>
+                            <tr><td>Colloid</td><td>Scatters light; particles don't settle</td><td>Milk, fog, gelatin</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Physical vs. chemical properties & changes</div>
+                <p><strong>Physical properties:</strong> observed without changing the substance. Examples: malleability, conductivity, solubility, viscosity, boiling/melting point, density.</p>
+                <p style="margin-top: 6px;"><strong>Chemical properties:</strong> only seen when substance becomes something different. Examples: reactivity, flammability.</p>
+                <p style="margin-top: 8px;"><strong>Physical change:</strong> shape/size changes, composition stays same. (Ice melting, glass breaking.)</p>
+                <p style="margin-top: 6px;"><strong>Chemical change:</strong> new substances form. Signs: color change, gas produced, precipitate forms, heat/light released. Rust, cake rising (CO₂ gas), burning are all chemical changes.</p>
+                <div class="infobox info-default">A <strong>precipitate</strong> is a solid that forms and separates from a liquid. Distillation separates dissolved particles from liquid. Density can test purity.</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Atomic structure</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Particle</th><th>Charge</th><th>Location</th><th>Mass</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Proton</td><td>+1</td><td>Nucleus</td><td>~1 amu</td></tr>
+                            <tr><td>Neutron</td><td>0</td><td>Nucleus</td><td>~1 amu</td></tr>
+                            <tr><td>Electron</td><td>−1</td><td>Orbitals (outside nucleus)</td><td>~0 (negligible)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p><strong>Atomic number</strong> = protons (defines the element). <strong>Mass number</strong> = protons + neutrons. <strong>Isotopes</strong> = same element, different neutron count. Atomic mass = weighted average of all isotopes. 1 amu = 1/12 the mass of carbon-12.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">History of atomic models</div>
+                <ol>
+                    <li><strong>Democritus:</strong> Proposed indivisible atoms (no experiment)</li>
+                    <li><strong>Dalton:</strong> All atoms of one element = same mass; combine in fixed ratios</li>
+                    <li><strong>Thomson:</strong> Discovered electron (−) → "plum pudding" model</li>
+                    <li><strong>Rutherford:</strong> Gold foil experiment → tiny dense nucleus, mostly empty space</li>
+                    <li><strong>Bohr:</strong> Electrons in fixed orbits/energy levels; jump levels when gaining/losing energy</li>
+                    <li><strong>Cloud model:</strong> Electrons in orbitals (probability regions). Ground state = lowest energy. Excited state = electron bumped up.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div id="periodic" class="page">
+            <h2>Periodic Table</h2>
+            <div class="card">
+                <div class="card-title">Organization</div>
+                <p>Mendeleev organized by increasing atomic mass → periodic law discovered. Modern table organized by <strong>atomic number</strong>.</p>
+                <p style="margin-top: 6px;">Horizontal rows = <strong>periods</strong>. Vertical columns = <strong>groups</strong>. Same group = same number of valence electrons. Left to right across a period: elements become less metallic, more nonmetallic.</p>
+                <p style="margin-top: 6px;">In electron dot diagrams, each dot = one valence electron.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Metals, nonmetals, metalloids</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Category</th><th>Properties</th><th>Table location</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Metals</td><td>Shiny, conduct heat/electricity, malleable, ductile</td><td>Left side</td></tr>
+                            <tr><td>Nonmetals</td><td>Poor conductors, brittle when solid</td><td>Right side</td></tr>
+                            <tr><td>Metalloids</td><td>Properties of both</td><td>Staircase border</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>Dull metal in air = more reactive. Transition metals have stronger metallic bonds than alkali metals. More valence electrons = stronger metallic bonds. Among K, Li, Fe — iron has strongest bonds.</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Key groups</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Group</th><th>Name</th><th>Key facts</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1A</td><td>Alkali metals</td><td>1 valence e⁻; most reactive metals; react violently with water</td></tr>
+                            <tr><td>2A</td><td>Alkaline earth metals</td><td>2 valence e⁻; less reactive than alkali metals</td></tr>
+                            <tr><td>7A</td><td>Halogens</td><td>7 valence e⁻; most reactive nonmetals</td></tr>
+                            <tr><td>8A</td><td>Noble gases</td><td>Full shells; almost no reactivity; 'neon lights' can be any noble gas</td></tr>
+                            <tr><td>5A</td><td>Nitrogen group</td><td>Fertilizers contain N and P from this group</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="infobox info-warn">Alkali metals are more reactive than alkaline earth metals in same period. Two most reactive groups overall = alkali metals + halogens. Reactive elements found in nature only as compounds.</div>
+                <p>Hydrogen is in Group 1A (1 valence electron) but is NOT a metal.</p>
+            </div>
+        </div>
+
+        <div id="bonds" class="page">
+            <h2>Bonding</h2>
+            <div class="card">
+                <div class="card-title">Types of bonds</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Bond</th><th>How it works</th><th>Between</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ionic</td><td>Electron transferred. Cation (+) and anion (−) attract. Forms crystal lattice. Sum of all charges = 0.</td><td>Metal + nonmetal</td></tr>
+                            <tr><td>Covalent</td><td>Electrons shared. Single (−), double (=), or triple (≡) bonds.</td><td>Two nonmetals</td></tr>
+                            <tr><td>Polar covalent</td><td>Electrons shared unequally. Polarity depends on atom types AND shape of molecule.</td><td>Nonmetals (different electronegativities)</td></tr>
+                            <tr><td>Metallic</td><td>Sea of delocalized electrons around metal ions. Stronger with more valence e⁻.</td><td>Metal + metal</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>A <strong>polyatomic ion</strong> = group of covalently bonded atoms carrying a charge (e.g., SO₄²⁻, CO₃²⁻, PO₄³⁻, OH⁻, NH₄⁺).</p>
+            </div>
+            <div class="card">
+                <div class="card-title">Writing formulas — the crisscross method</div>
+                <p>For ionic compounds: use each ion's charge as the other's subscript. Then simplify if possible.</p>
+                <div class="infobox info-default">Fe³⁺ + O²⁻ → Fe₂O₃. Check: 2(+3) + 3(1−2) = 0 ✓</div>
+                <div class="infobox info-default">Al³⁺ + CO₃²⁻ → Al₂(CO₃)₃. Check: 2(+3) + 3(1−2) = 0 ✓</div>
+                <p style="margin-top: 8px;"><strong>Covalent naming prefixes:</strong> mono=1, di=2, tri=3, tetra=4, penta=5.</p>
+                <div class="infobox info-default">SO₂ = sulfur dioxide · N₂O₅ = dinitrogen pentoxide · PCl₃ = phosphorus trichloride</div>
+                <p style="margin-top: 8px;"><strong>Ionic naming:</strong> cation name first (Roman numerals for transition metals), then anion (−ide for simple, keep name for polyatomic).</p>
+                <div class="infobox info-default">FeCl₃ = iron(III) chloride · NaOH = sodium hydroxide · CaSO₄ = calcium sulfate · CrO₃ = chromium(VI) oxide</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Polyatomic ions to memorize</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Ion name</th><th>Formula</th><th>Charge</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Sulfate</td><td>SO₄</td><td>2−</td></tr>
+                            <tr><td>Carbonate</td><td>CO₃</td><td>2−</td></tr>
+                            <tr><td>Phosphate</td><td>PO₄</td><td>3−</td></tr>
+                            <tr><td>Hydroxide</td><td>OH</td><td>1−</td></tr>
+                            <tr><td>Ammonium</td><td>NH₄</td><td>1+</td></tr>
+                            <tr><td>Nitrate</td><td>NO₃</td><td>1−</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="reactions" class="page">
+            <h2>Reactions</h2>
+            <div class="card">
+                <div class="card-title">Balancing equations — the rules</div>
+                <p><strong>Law of conservation of mass:</strong> atoms can't appear or disappear. Both sides must have equal numbers of each element.</p>
+                <p style="margin-top: 6px;"><strong>Subscripts</strong> = atoms in a molecule (never change them). <strong>Coefficients</strong> = numbers in front (these you change to balance).</p>
+                <ol>
+                    <li>Write the unbalanced equation with correct formulas</li>
+                    <li>Count atoms of each element on both sides</li>
+                    <li>Add coefficients — start with the most complex molecule</li>
+                    <li>Never change subscripts</li>
+                    <li>Check that all elements are balanced</li>
+                </ol>
+                <div class="infobox info-success">Na₃PO₄ + HCl → NaCl + H₃PO₄ → balanced coefficients: <strong>(1, 3, 3, 1)</strong></div>
+                <div class="infobox info-success">Fe + HC₂H₃O₂ → Fe(C₂H₃O₂)₃ + H₂ → balanced: <strong>(2, 6, 2, 3)</strong></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Types of reactions</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Type</th><th>General form</th><th>Example</th><th>Clue word</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Synthesis</td><td>A + B → AB</td><td>Zn + Br₂ → ZnBr₂</td><td>forms / combines</td></tr>
+                            <tr><td>Decomposition</td><td>AB → A + B</td><td>H₂O → H₂ + O₂</td><td>breaks down</td></tr>
+                            <tr><td>Single replacement</td><td>A + BC → AC + B</td><td>Ba + K₂SO₄ → BaSO₄ + 2K</td><td>replaces</td></tr>
+                            <tr><td>Double replacement</td><td>AB + CD → AD + CB</td><td>CuSO₄ + 2AlPO₄ → Al₂(SO₄)₃ + Cu₃(PO₄)₂</td><td>exchange / precipitate</td></tr>
+                            <tr><td>Combustion</td><td>fuel + O₂ → CO₂ + H₂O</td><td>2C₄H₁₀ + 13O₂ → 8CO₂ + 10H₂O</td><td>burns / oxygen always present</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="infobox info-default">Nonmetal single replacement: A + BC → C + BA (nonmetal replaces other nonmetal). Double replacement always produces 2 products. Combustion always involves oxygen.</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Mole calculations</div>
+                <p style="margin-top: 6px;"><strong>Molar mass</strong> = sum of atomic masses in g/mol. Molar mass of Cl₂ = 2 × 35.5 = 71 g/mol.</p>
+                <p style="margin-top: 6px;"><strong>Moles</strong> = mass (g) ÷ molar mass.</p>
+                <p style="margin-top: 6px;"><strong>Avogadro's Number:</strong> <span class="formula">1 mole = 6.02 × 10²³ particles</span>. Use this to convert between particles and moles!</p>
+            </div>
+        </div>
+
+        <div id="quiz" class="page">
+            <h2>Practice Quiz</h2>
+            <div class="card">
+                <div class="card-title">Test Your Understanding</div>
+                <p style="margin-bottom: 20px;">Click on your answer selection to see real-time corrections and step-by-step solutions.</p>
+                
+                <div id="quiz-container"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Quiz data array
+        const quizQuestions = [
+            { q: "A runner goes from 6 m/s to 10 m/s in 4 seconds. What is the acceleration?", opts: ["0.5 m/s²", "1 m/s²", "4 m/s²", "2.5 m/s²"], ans: 1, exp: "a = (10−6)/4 = 4/4 = 1 m/s²" },
+            { q: "Which is a VECTOR quantity?", opts: ["Speed", "Distance", "Mass", "Velocity"], ans: 3, exp: "Velocity has both magnitude and direction — that makes it a vector." },
+            { q: "A 750 kg car has a net force of 900 N. What is its acceleration?", opts: ["1.2 m/s²", "0.83 m/s²", "8.3 m/s²", "120 m/s²"], ans: 0, exp: "F = ma → a = F/m = 900/750 = 1.2 m/s²" },
+            { q: "In a series circuit with RT = 1000 Ω and VT = 10 V, what is total current?", opts: ["10 A", "100 A", "0.01 A", "0.1 A"], ans: 2, exp: "I = V/R = 10/1000 = 0.01 A. Current is the same everywhere in series." },
+            { q: "In a parallel circuit, which quantity is equal across all branches?", opts: ["Current", "Resistance", "Voltage", "Power"], ans: 2, exp: "In parallel: V₁ = V₂ = V₃ = VT. Voltage is always equal across branches." },
+            { q: "A 74 kg skydiver falls at 52 m/s. What is the kinetic energy?", opts: ["3848 J", "100,048 J", "7696 J", "200,096 J"], ans: 1, exp: "KE = ½mv² = 0.5 × 74 × 52² = 0.5 × 74 × 2704 ≈ 100,048 J" },
+            { q: "What is the molar mass of Cl₂?", opts: ["35.5 g/mol", "17.5 g/mol", "71 g/mol", "53 g/mol"], ans: 2, exp: "Cl atomic mass = 35.5. Cl₂ = 2 × 35.5 = 71 g/mol" },
+            { q: "Iron(III) Oxide has the formula:", opts: ["FeO", "Fe₂O", "FeO₃", "Fe₂O₃"], ans: 3, exp: "Fe³⁺ and O²⁻ — crisscross charges → Fe₂O₃. Check: 2(+3) + 3(−2) = 0 ✓" },
+            { q: "Which is a chemical change?", opts: ["Ice melting", "Salt dissolving", "Rust forming on iron", "Glass breaking"], ans: 2, exp: "Rust = iron + oxygen forming a new substance. The others are physical changes." },
+            { q: "In Rutherford's gold foil experiment, alpha particles that bounced back struck:", opts: ["Electrons", "The electron cloud", "The nucleus", "Empty space"], ans: 2, exp: "The rare particles that bounced back hit the tiny, dense nucleus in the center." },
+            { q: "Which wave type has compressions and rarefactions?", opts: ["Transverse", "Electromagnetic", "Longitudinal", "Standing"], ans: 2, exp: "Longitudinal waves vibrate parallel to travel direction. Sound is longitudinal." },
+            { q: "Efficiency formula for a machine:", opts: ["IMA/AMA × 100%", "Work output / Work input × 100%", "Input force / Output force × 100%", "Output distance / Input distance × 100%"], ans: 1, exp: "Efficiency = (Work output / Work input) × 100%. Always < 100% due to friction." }
+        ];
+
+        // Handles sidebar navigation switching
+        function switchPage(pageId, buttonElement) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active-page'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active-page');
+            
+            // Update button tab highlights
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            buttonElement.classList.add('active');
+            
+            // Scroll pane back to top
+            window.scrollTo(0, 0);
+        }
+
+        // Generate the quiz contents cleanly
+        function loadQuiz() {
+            const container = document.getElementById('quiz-container');
+            quizQuestions.forEach((q, qIdx) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'quiz-item';
+                
+                const questionText = document.createElement('div');
+                questionText.style.fontWeight = '600';
+                questionText.innerText = `Q${qIdx + 1}: ${q.q}`;
+                itemDiv.appendChild(questionText);
+                
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'quiz-options';
+                
+                q.opts.forEach((opt, oIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-opt';
+                    btn.innerText = opt;
+                    btn.onclick = () => checkAnswer(qIdx, oIdx, q.ans, optionsDiv, itemDiv);
+                    optionsDiv.appendChild(btn);
+                });
+                
+                itemDiv.appendChild(optionsDiv);
+                
+                const expDiv = document.createElement('div');
+                expDiv.id = `exp-${qIdx}`;
+                expDiv.className = 'explanation';
+                itemDiv.appendChild(expDiv);
+                
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // Handle dynamic selection color shifts and display text evaluations
+        function checkAnswer(qIdx, selectedIdx, correctIdx, optionsDiv, itemDiv) {
+            const buttons = optionsDiv.querySelectorAll('.quiz-opt');
+            const expDiv = itemDiv.querySelector('.explanation');
+            
+            // Lock out clicking other buttons again
+            buttons.forEach(b => b.disabled = true);
+            
+            buttons.forEach((btn, oIdx) => {
+                if (oIdx === correctIdx) {
+                    btn.style.background = '#e6f7ef';
+                    btn.style.borderColor = '#5fcc9a';
+                }
+                if (oIdx === selectedIdx && selectedIdx !== correctIdx) {
+                    btn.style.background = '#fef0f0';
+                    btn.style.borderColor = '#f5abab';
+                }
+            });
+
+            // Reveal explanation box
+            expDiv.style.display = 'block';
+            if (selectedIdx === correctIdx) {
+                expDiv.className = 'explanation info-success';
+                expDiv.innerHTML = `<strong>Correct!</strong> ${quizQuestions[qIdx].exp}`;
+            } else {
+                expDiv.className = 'explanation info-danger';
+                expDiv.innerHTML = `<strong>Incorrect.</strong> ${quizQuestions[qIdx].exp}`;
+            }
+        }
+
+        // Initialize quiz assembly on window initialization
+        window.onload = loadQuiz;
+    </script>
+</body>
+</html>
